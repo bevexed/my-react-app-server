@@ -28,8 +28,8 @@ router.post('/register', function (req, res) {
             // 保存
             new UserModel({username, password, type}).save((err, user) => {
                 // 生成cookies
-                res.cookie('userid', user._id, {maxAge: 1000 * 60 * 60 * 24 * 7})
-                res.send({code: 0, data: {id: 'abc', username}})
+                res.cookie('userid', user._id, {maxAge: 1000 * 60 * 60 * 24 * 7});
+                res.send({code: 0, data: {id: 'abc', username, type}})
             })
         }
 
@@ -40,7 +40,7 @@ router.post('/register', function (req, res) {
 router.post('/login', function (req, res) {
     const {username, password} = req.body
     // 根据 username 和 password 查询数据库 users
-    UserModel.findOne({username, password}, {password: 0,__v:0}, function (err, user) {
+    UserModel.findOne({username, password}, {password: 0, __v: 0}, function (err, user) {
         if (user) {
             // 生成cookies
             res.cookie('userid', user._id, {maxAge: 1000 * 60 * 60 * 24 * 7})
