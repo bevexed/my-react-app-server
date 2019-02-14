@@ -70,4 +70,30 @@ router.post('/update', function (req, res) {
 		return res.status(200).json({code: 0, data})
 	})
 });
+
+// 根据 cookie 获取 user数据
+router.get('/user', function (req, res) {
+	const userid = req.cookies.userid
+	if (!userid) {
+		return res.json({code: 1, msg: '请先登录'})
+	}
+
+	UserModel.findById({_id: userid}, function (error, user) {
+		if (!user) {
+			return res.json({code: 1, msg: '暂无该用户'})
+		}
+		res.json({code: 0, data: user})
+	})
+})
+
+// 获取用户列表
+router.get('/userlist', function (req, res) {
+	const {type} = req.query;
+	UserModel.find({type}, function (error, users) {
+		if (error) {
+			res.json({code: 1, msg: error})
+		}
+		res.json({code: 0, data: users})
+	})
+})
 module.exports = router;
