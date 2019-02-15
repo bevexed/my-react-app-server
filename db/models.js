@@ -2,7 +2,7 @@
 // 1.1 引入mongoose
 const mongoose = require('mongoose');
 // 1.2 链接数据库
-mongoose.connect('mongodb://127.0.0.1:27017/my-react-app-test');
+mongoose.connect('mongodb://127.0.0.1:27017/my-react-app-test',{ useNewUrlParser: true });
 // 1.3 获取链接对象
 const conn = mongoose.connection;
 //  1.4 绑定链接完成的监听
@@ -26,3 +26,17 @@ const userSchema = mongoose.Schema({
 const UserModel = mongoose.model('user', userSchema);
 // 2.3 向外暴露 Model
 exports.UserModel = UserModel;
+
+const chatSchema = mongoose.Schema({
+	from:{type:String,require:true},
+	to:{type:String,require:true},
+	chat_id:{type:String,require:true},
+	content:{type:String,require:true},
+	read:{type:Boolean,default:false},
+	create_time:{type:Number}
+});
+
+const ChatModel = mongoose.model('chat',chatSchema);
+
+exports.ChatModel = ChatModel;
+

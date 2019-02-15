@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {UserModel} = require('../db/models');
+const {UserModel, ChatModel} = require('../db/models');
 /* GET home page. */
 router.get('/', function (req, res, next) {
 	res.render('index', {title: 'Express'});
@@ -96,4 +96,45 @@ router.get('/userlist', function (req, res) {
 		res.json({code: 0, data: users})
 	})
 })
+
+// 获取当前用户聊天列表
+router.get('/msglist', function (req, res) {
+	const userid = req.cookies.userid
+
+	UserModel.find(function (err, userDocs) {
+		if (err) {
+			return res.json({code: 1, msg: '服务器错误'})
+		}
+		// const users = {};
+		// userDocs.forEach(doc => {
+		// 	users[doc._id] = {username: doc.username, header: doc.header}
+		// })
+
+		const users = userDocs.reduce((users, user) => {
+			users[user._id] = {username: user.username, header: user.header}
+			return users
+		}, {})
+		ChatModel.find({'$or': [{from: userid}, {to: userid}]}, filter, function (err, chatMsgs) {
+			res.json({
+				code: 0,
+				data: {users: chatMsgs}
+			})
+		})
+	})
+});
+
+// 指定消息已读
+router.post('/readmsg',function (req,res) {
+	const from = req.body.from;
+	const to = req.cookies.userid;
+
+	ChatModel.update({from,to,read:false},{read:true},{multi:true},function (err,doc) {
+		res.json({
+			code:0,
+			data:doc.nModified
+		})
+	})
+
+})
+
 module.exports = router;
