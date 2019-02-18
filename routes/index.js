@@ -111,13 +111,13 @@ router.get('/msglist', function (req, res) {
 		// })
 
 		const users = userDocs.reduce((users, user) => {
-			users[user._id] = {username: user.username, header: user.header}
+			users[user._id] = {username: user.username, header: user.header};
 			return users
 		}, {})
-		ChatModel.find({'$or': [{from: userid}, {to: userid}]}, filter, function (err, chatMsgs) {
+		ChatModel.find({'$or': [{from: userid}, {to: userid}]}, function (err, chatMsgs) {
 			res.json({
 				code: 0,
-				data: {users: chatMsgs}
+				data: {users, chatMsgs}
 			})
 		})
 	})

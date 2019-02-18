@@ -22,7 +22,7 @@ app.set('port', port);
  */
 
 const server = http.createServer(app);
-require('../socketIO/test')(server);
+require('../socketIO/sockerIO_server')(server);
 /**
  * Listen on provided port, on all network interfaces.
  */
